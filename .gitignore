@@ -17,5 +17,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/views/vendor/filament
+/resources/views/vendor/filament
 /stubs/filament/
