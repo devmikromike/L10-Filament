@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
@@ -17,12 +18,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\TeamsRelationManager;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?string $navigationGroup = 'User Management';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -40,7 +43,12 @@ class UserResource extends Resource
                TextInput::make('password')
                      ->password()
                      ->required()
-                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state)),
+               Select::make('role_id')
+                   ->label('Roles')
+                   ->multiple()
+                   ->relationship('roles', 'name')
+
 
             ]);
     }
@@ -71,7 +79,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TeamsRelationManager::class,
         ];
     }
 

@@ -4,23 +4,26 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-// use App\Models\Role;
+use App\Models\Role;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
+
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\RoleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Filament\Resources\RoleResource\RelationManagers\TeamsRelationManager;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'User Management';
 
     public static function form(Form $form): Form
     {
@@ -28,7 +31,10 @@ class RoleResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
-                ->unique()
+                ->unique(),
+             Select::make('permissions')
+             ->multiable()
+             ->relationship('permission', 'name')
             ]);
     }
 
@@ -57,7 +63,7 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TeamsRelationManager::class,
         ];
     }
 

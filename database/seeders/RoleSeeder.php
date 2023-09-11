@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Team;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -53,6 +54,12 @@ class RoleSeeder extends Seeder
         $miscPermission,
         $loginPermission3
         ]);
+
+        // Create TEam for User
+
+        $teamUser = Team::create(['name' => 'user', 'slug' => 'user']);
+        $teamDev = Team::create(['name' => 'developer', 'slug' => 'devops']);
+        $teamAdmin = Team::create(['name' => 'admin', 'slug' => 'admin']);
 
 
         $superAdminRole = Role::create(['name' => 'super-admin'])->syncPermissions([
@@ -149,13 +156,15 @@ class RoleSeeder extends Seeder
             'remember_token' => Str::random(10)
             ])->assignRole($businessRole);
 
-        User::create([
+        $adminUser = User::create([
         'name' => 'admin',
         'email' => 'admin@admin.com',
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10)
         ])->assignRole($adminRole);
+
+        $adminUser->teams()->attach($teamAdmin);
 
 
         User::create([
@@ -167,7 +176,7 @@ class RoleSeeder extends Seeder
         ])->assignRole($moderatorRole);
 
 
-        User::create([
+       $userDev = User::create([
         'name' => 'developer',
         'email' => 'developer@admin.com',
         'email_verified_at' => now(),
@@ -175,14 +184,18 @@ class RoleSeeder extends Seeder
         'remember_token' => Str::random(10)
         ])->assignRole($developerRole);
 
-        for ($i = 0; $i <= 5; $i++) {
-        User::create([
+        $userDev->teams()->attach($teamDev);
+
+        for ($i = 0; $i <= 4000; $i++) {
+        $user = User::create([
         'name' => 'Test '.$i,
         'email' => 'test'.$i.'@admin.com',
         'email_verified_at' => now(),
         'password' => Hash::make('password'),
         'remember_token' => Str::random(10)
         ])->assignRole($userRole);
+
+        $user->teams()->attach($teamUser);
         }
     }
 }

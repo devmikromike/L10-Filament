@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Team;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -18,6 +19,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Spatie\Permission\Models\Role;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,10 +30,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->tenant(Team::class)
+            ->brandName('Admin Interface')
+          //  ->topNavigation()
             ->profile(EditProfile::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->favicon('/images/mikromike.png')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -39,8 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
