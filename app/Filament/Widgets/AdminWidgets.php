@@ -11,8 +11,6 @@ class AdminWidgets extends BaseWidget
 {
     protected function getStats(): array
     {
-
-
         return [
             Stat::make('Total Users', User::count()),
             Stat::make('Users Registered Today',
